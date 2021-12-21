@@ -72,7 +72,7 @@ const TableItem: FC<{
     <TableCell align="right">{data.serial}</TableCell>
     <TableCell align="right">
         <Link href={'https://www.google.com/maps/search/' + data.position.replace(' ', '+')}>
-            {data.position}
+            <a target={'_blank'}>{data.position}</a>
         </Link>
     </TableCell>
     <TableCell align="right">
