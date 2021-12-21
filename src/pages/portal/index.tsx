@@ -52,8 +52,7 @@ const chartData = {
 
 
 export default function Main () {
-   const methods = useForm({ defaultValues: defaultValues });
-   const { handleSubmit, reset, control, setValue } = methods;
+   const { handleSubmit, reset, control, setValue } = useForm({ defaultValues: defaultValues });
    const onSubmit = (data) => console.log(data);
 
     return <Stack spacing={3}>

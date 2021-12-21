@@ -1,8 +1,11 @@
-import { Button, Input, Snackbar, Stack } from '@mui/material';
+import { Button, Card, CardContent, Input, Snackbar, Stack, TextField, Typography } from '@mui/material';
 import { MutableRefObject, useRef, useState } from 'react';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { login } from '../core/auth';
 import { useRouter } from 'next/router';
+import { Box } from '@mui/system';
+import { useForm } from 'react-hook-form';
+import { Text } from './form/Text';
 
 function Auth () {
     const username: MutableRefObject<HTMLDivElement> = useRef<HTMLDivElement>();
@@ -12,12 +15,12 @@ function Auth () {
 
     const router = useRouter();
 
-    const authAction = (route: string, onfulfilled: (resp: AxiosResponse) => void) => {
-        const name = (username.current.firstElementChild as HTMLInputElement).value;
-        const password = (pass.current.firstElementChild as HTMLInputElement).value;
+    const authAction = (route: string, credentials={password:null, username:null}, onfulfilled: (resp: AxiosResponse) => void) => {
+        const username = credentials.username
+        const password = credentials.password
 
         axios.post(route, {
-            username : name,
+            username,
             password,
         }).then(
             onfulfilled,
@@ -27,43 +30,64 @@ function Auth () {
         );
     };
 
-    const loginUser = (): void => {
-        authAction('auth/login', (resp: AxiosResponse) => {
+    const loginUser = (info): void => {
+        authAction('auth/login', info, (resp: AxiosResponse) => {
             login(resp.data.accessToken);
-
             router.push('/portal');
         });
     };
 
-    const register = (): void => {
-        authAction('auth/register', (resp: AxiosResponse) => {
+    const register = (info): void => {
+        authAction('auth/register', info, (resp: AxiosResponse) => {
             setSnackbarMessage('User registered!');
         });
     };
 
+    const { handleSubmit, reset, control, setValue } = useForm();
+
     return (
-        <Stack spacing={2}>
-            <Input ref={username} placeholder="Username" />
+        <Card>
+            <CardContent >
+                <Box m={2}>
+                    <Stack spacing={4}>
+                        <Typography variant="h5" component="div">
+                            Авторизація
+                        </Typography>
 
-            <Input ref={pass} placeholder="Password" />
+                        <Stack spacing={2}>
 
-            <Button prefix="primary" variant="contained" onClick={loginUser}>Login</Button>
+                            <Stack spacing={1}>
+                                <Text name="username" control={control} variant="outlined"  placeholder="Username" />
 
-            <Button prefix="primary" variant="contained" onClick={register}>Register</Button>
+                                <Text name="password" control={control} variant="outlined"  placeholder="Password" />
+                            </Stack>
 
-            <Snackbar
-                anchorOrigin={
-                    {
-                        vertical   : 'bottom',
-                        horizontal : 'center',
-                    }
-                }
-                open={!!snackbarMessage}
-                message={snackbarMessage}
-                autoHideDuration={2000}
-                onClose={() => setSnackbarMessage(null)}
-            />
-        </Stack>
+                            <Stack spacing={1}>
+                                <Button prefix="primary" variant="contained" onClick={handleSubmit(loginUser)}>Login</Button>
+
+                                <Button prefix="primary" variant="contained" onClick={handleSubmit(register)}>Register</Button>
+                            </Stack>
+
+                            
+                            <Snackbar
+                                anchorOrigin={
+                                    {
+                                        vertical   : 'bottom',
+                                        horizontal : 'center',
+                                    }
+                                }
+                                open={!!snackbarMessage}
+                                message={snackbarMessage}
+                                autoHideDuration={2000}
+                                onClose={() => setSnackbarMessage(null)}
+                            />
+                        </Stack>
+                    </Stack>
+                    
+                </Box>
+            </CardContent>
+        </Card>
+        
     );
 }
 
