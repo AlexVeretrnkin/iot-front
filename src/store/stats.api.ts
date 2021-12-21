@@ -14,11 +14,14 @@ export const statsApi = createApi({
             query : _ => ({ url : `/stats/meterCount`, method : 'get'}),
         }),
         getReceivedReadings : build.query({
-            query : _ => ({ url : `/stats/receivedReadings`, method : 'get'}),
+            query : (params) => ({ url : `/stats/readingsReceived`, method : 'get', params}),
+        }),
+        getConsumption : build.query({
+            query : (params) => ({ url : `/stats/consumption`, method : 'get', params}),
         }),
         
        
     }),
 });
 
-export const { useGetMeterCountQuery, useGetReceivedReadingsQuery } = statsApi;
+export const { useGetMeterCountQuery, useGetReceivedReadingsQuery, useGetConsumptionQuery } = statsApi;

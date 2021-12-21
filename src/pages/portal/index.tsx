@@ -7,7 +7,7 @@ import { CardGiftcardRounded } from '@mui/icons-material';
 import { useState } from 'react'
 import { useForm } from "react-hook-form";
 import { DateTime } from '../../components/form/DateTime';
-import { useGetMeterCountQuery } from '../../store/stats.api';
+import { useGetConsumptionQuery, useGetMeterCountQuery, useGetReceivedReadingsQuery } from '../../store/stats.api';
 import { DateRangeQueryModel } from '../../models/query/date-range-query.model';
 
 import { getFromTo } from '../../core/date-formater';
@@ -48,6 +48,11 @@ export default function Main () {
 
    const [dateQuery, setDateQuery] = useState<DateRangeQueryModel>({ from: moment(defaultValues.dateFrom), to: moment(defaultValues.dateTo) });
    const { data: meterCountData, error: meterCountError, isLoading: meterCountIsLoading } = useGetMeterCountQuery();
+   const { data: receivedReadingsData, error: receivedReadingsError, isLoading: receivedReadingsIsLoading } = useGetReceivedReadingsQuery(dateQuery);
+   const {data: eleConData, error: eleConError, isLoading: eleConIsLoading } = useGetConsumptionQuery({...dateQuery, type: "electricity"})
+   const {data: waterConData, error: waterConError, isLoading: waterConIsLoading } = useGetConsumptionQuery({...dateQuery, type: "water"})
+   const {data: heatConData, error: heatConError, isLoading: heatConIsLoading } = useGetConsumptionQuery({...dateQuery, type: "heat"})
+   const {data: gasConData, error: gasConError, isLoading: gasConIsLoading } = useGetConsumptionQuery({...dateQuery, type: "gas"})
 
     return <Stack spacing={3}>
         <Masonry columns={{xs: 1, sm: 1, md: 2, lg:2, xl:3}} spacing={1}>
@@ -109,7 +114,7 @@ export default function Main () {
                     <Typography variant="h5" component="div">
                         Показників отримано
                     </Typography>
-                    <Bar data={chartData} />
+                    <Bar data={receivedReadingsIsLoading ? chartData: {labels: receivedReadingsData.map(r => r.at), datasets: [{label: 'Кількість', data: receivedReadingsData.map(r => r.count)}]}} />
                 </CardContent>
             </Card>
 
@@ -118,25 +123,7 @@ export default function Main () {
                     <Typography variant="h5" component="div">
                         Вжиток електроенергії
                     </Typography>
-                    <Line data={chartData} />
-                </CardContent>
-            </Card>
-
-            <Card variant="outlined">
-                <CardContent>
-                    <Typography variant="h5" component="div">
-                        Вжиток газу
-                    </Typography>
-                    <Line data={chartData} />
-                </CardContent>
-            </Card>
-
-            <Card variant="outlined">
-                <CardContent>
-                    <Typography variant="h5" component="div">
-                        Вжиток теплоенергії
-                    </Typography>
-                    <Line data={chartData} />
+                    <Line data={eleConIsLoading ? chartData : {labels: eleConData.map(r => r.at), datasets: [{label: 'Вжиток', data: eleConData.map(r => r.consumption)}]}} />
                 </CardContent>
             </Card>
 
@@ -145,9 +132,32 @@ export default function Main () {
                     <Typography variant="h5" component="div">
                         Вжиток води
                     </Typography>
-                    <Line data={chartData} />
+                    <Line data={waterConIsLoading ? chartData : {labels: waterConData.map(r => r.at), datasets: [{label: 'Вжиток', data: waterConData.map(r => r.consumption)}]}} />
+
                 </CardContent>
             </Card>
+
+            <Card variant="outlined">
+                <CardContent>
+                    <Typography variant="h5" component="div">
+                        Вжиток газу
+                    </Typography>
+                    <Line data={gasConIsLoading ? chartData : {labels: gasConData.map(r => r.at), datasets: [{label: 'Вжиток', data: gasConData.map(r => r.consumption)}]}} />
+
+                </CardContent>
+            </Card>
+
+            <Card variant="outlined">
+                <CardContent>
+                    <Typography variant="h5" component="div">
+                        Вжиток теплоенергії
+                    </Typography>
+                    <Line data={heatConIsLoading ? chartData : {labels: heatConData.map(r => r.at), datasets: [{label: 'Вжиток', data: heatConData.map(r => r.consumption)}]}} />
+
+                </CardContent>
+            </Card>
+
+          
     </Masonry>
   </Stack>
 
