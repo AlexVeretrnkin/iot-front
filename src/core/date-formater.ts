@@ -1,12 +1,16 @@
 import moment from 'moment';
 
 export const getTime = (date: Date): string => {
-    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds() > 10 ? date.getSeconds() : '0' + date.getSeconds().toString()}`;
+    return `${getStringValue(date.getHours())}:${getStringValue(date.getMinutes())}:${getStringValue(date.getSeconds())}`;
 };
 
 export const getDate = (date: Date): string => {
-    return `${date.getFullYear()}/${date.getDate()}/${date.getMonth()}`;
+    return `${ getStringValue(date.getMonth() + 1)}/${getStringValue(date.getDate())}/${date.getFullYear()}`;
 };
+
+const getStringValue = (val) => {
+    return val >= 10 ? val : '0' + val.toString()
+}
 
 export function getFromTo(type: string) {
     const currentDate = moment() //new Date();

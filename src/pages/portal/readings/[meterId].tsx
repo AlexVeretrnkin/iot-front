@@ -67,7 +67,13 @@ function Readings () {
     const [yesNoOpen, setYesNoOpen] = useState(false);
 
     const { control, getValues, setValue, handleSubmit } = useForm();
-    const onSubmit = (data) => console.log(data, getValues());
+    const onSubmit = (data) => {
+        setQuery({
+            ...query,
+            from: new Date(data.from._d)?.toISOString(),
+            to: new Date(data.to._d)?.toISOString()
+        });
+    };
 
     const { data, error, isLoading } = useGetReadingsQuery(query, {
         skip: !query?.meterId
@@ -91,7 +97,8 @@ function Readings () {
         const reading: ReadingModel = getValues() as ReadingModel;
 
         createReading({
-            ...reading,
+            value: reading.value,
+            date: reading.date ?? new Date().toISOString(),
             meterId : meterId as string,
         });
 
@@ -113,61 +120,67 @@ function Readings () {
 
     return (
         <Container>
-            {
-                data?.data?.length ?
-                <Card variant="outlined" sx={{marginBottom: '24px'}}>
-                    <CardContent>
-                        <Stack spacing={2}>
-                            <Typography variant="h5" component="div">
-                                Фільтрація
-                            </Typography>
-                            <Stack spacing={1} direction="row">
-                                <Button
-                                    sx={{ width : '1/3' }}
-                                    onClick={() => {
-                                        const [from, to] = getFromTo('hour');
+            <Card variant="outlined" sx={{marginBottom: '24px'}}>
+                <CardContent>
+                    <Stack spacing={2}>
+                        <Typography variant="h5" component="div">
+                            Фільтрація
+                        </Typography>
+                        <Stack spacing={1} direction="row">
+                            <Button
+                                sx={{ width : '1/3' }}
+                                onClick={() => {
+                                    const [from, to] = getFromTo('hour');
+                                    setValue('from', from);
+                                    setValue('to', to);
+                                }}
+                                variant={'outlined'}>
+                                Година
+                            </Button>
+                            <Button
+                                sx={{ width : '1/3' }}
+                                onClick={() => {
+                                    const [from, to] = getFromTo('day');
+                                    setValue('from', from);
+                                    setValue('to', to);
+                                }}
+                                variant={'outlined'}>
+                                День
+                            </Button>
+                            <Button
+                                sx={{ width : '1/3' }}
+                                onClick={
+                                    () => {
+                                        const [from, to] = getFromTo('week');
                                         setValue('from', from);
                                         setValue('to', to);
-                                    }}
-                                    variant={'outlined'}>
-                                    Година
-                                </Button>
-                                <Button
-                                    sx={{ width : '1/3' }}
-                                    onClick={() => {
-                                        const [from, to] = getFromTo('day');
-                                        setValue('from', from);
-                                        setValue('to', to);
-                                    }}
-                                    variant={'outlined'}>
-                                    День
-                                </Button>
-                                <Button
-                                    sx={{ width : '1/3' }}
-                                    onClick={
-                                        () => {
-                                            const [from, to] = getFromTo('week');
-                                            setValue('from', from);
-                                            setValue('to', to);
-                                        }
                                     }
-                                    variant={'outlined'}>
-                                    Тиждень
-                                </Button>
-                            </Stack>
-                            <Stack spacing={1} direction="row">
-                                <DateTime sx={{ width : '40%' }} name="from" control={control} label="Від" />
-                                <DateTime sx={{ width : '40%' }} name="to" control={control} label="До" />
-
-                                <Button sx={{ width : '20%' }} onClick={handleSubmit(onSubmit)} variant={'outlined'}>
-                                    Виконати
-                                </Button>
-                            </Stack>
+                                }
+                                variant={'outlined'}>
+                                Тиждень
+                            </Button>
                         </Stack>
-                    </CardContent>
-                </Card> :
-                    null
-            }
+                        <Stack spacing={1} direction="row">
+                            <DateTime sx={{ width : '40%' }} name="from" control={control} label="Від" />
+                            <DateTime sx={{ width : '40%' }} name="to" control={control} label="До" />
+
+                            <Button sx={{ width : '20%' }} onClick={handleSubmit(onSubmit)} variant={'outlined'}>
+                                Виконати
+                            </Button>
+
+                            <Button sx={{ width : '20%' }} onClick={_ => {
+                                setQuery({
+                                    ...query,
+                                    to: null,
+                                    from: null
+                                });
+                            }} variant={'text'}>
+                                Скинути
+                            </Button>
+                        </Stack>
+                    </Stack>
+                </CardContent>
+            </Card>
 
             {
                 data?.data?.length ?
@@ -206,7 +219,7 @@ function Readings () {
                 <DialogTitle>Редагування лічильника</DialogTitle>
                 <DialogContent>
                     <Stack spacing={2} sx={{ paddingTop : '5px' }}>
-                        <Text name="date" control={control} variant="outlined" placeholder="Дата" label={'Дата'} />
+                        <DateTime sx={{ width : '100%' }} name="date" control={control} label="Дата" />
 
                         <Text name="value" control={control} variant="outlined" placeholder="Значення" label={'Значення'} />
                     </Stack>
