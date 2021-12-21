@@ -32,9 +32,9 @@ function BaseTable<T> (
                     </TableHead>
                     <TableBody>
                         {
-                            tableData.map(
+                            tableData ? tableData.map(
                                 (row, idx) => <Item key={idx} data={row} />,
-                            )
+                            ) : <TableCell>'Loading...'</TableCell>
                         }
                     </TableBody>
                 </Table>
@@ -42,7 +42,7 @@ function BaseTable<T> (
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25, 50, 100]}
                 component="div"
-                count={tableData.length}
+                count={tableData?.length ?? 0}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
