@@ -3,6 +3,9 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import BaseTable from '../../components/Table';
 import { FC } from 'react';
+import { MeterQueryModel } from '../../models/query/meter-query.model';
+import { useGetMetersQuery } from '../../store/meters';
+import { MeterModel } from '../../models/meter.model';
 
 function createData(
     name: string,
@@ -26,24 +29,31 @@ const rows = [
     createData('dfgdgd', 356, 16.0, 49, 3.9),
 ];
 
-const TableItem: FC<{data: any}> = ({data}) => <TableRow
-    key={data.name}
+const TableItem: FC<{data: MeterModel}> = ({data}) => <TableRow
+    key={data.id}
     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
 >
     <TableCell component="th" scope="row">
         {data.name}
     </TableCell>
-    <TableCell align="right">{data.calories}</TableCell>
-    <TableCell align="right">{data.fat}</TableCell>
-    <TableCell align="right">{data.carbs}</TableCell>
-    <TableCell align="right">{data.protein}</TableCell>
+    <TableCell align="right">{data.type}</TableCell>
+    <TableCell align="right">{data.serial}</TableCell>
+    <TableCell align="right">{data.position}</TableCell>
+    <TableCell align="right">{data.key}</TableCell>
 </TableRow>
 
 function Meters() {
+    //@ts-ignore
+    const { data, error, isLoading } = useGetMetersQuery({
+        page: 0,
+        offset: 10
+    } as MeterQueryModel);
+
+
     return (
         <BaseTable
-            tableHead={['Dessert (100g serving)', 'Calories', 'Fat', 'Carbs', 'Protein']}
-            tableData={rows}
+            tableHead={['Назва', 'Тип', 'Серійний номер', 'Розташування', 'Ключ']}
+            tableData={data?.data}
             Item={TableItem}
             handleChangePage={console.log}
             handleChangeRowsPerPage={console.log}
