@@ -18,8 +18,8 @@ const BaseSelect: FC<SelectProps> = (
         <Controller
             name={name}
             control={control}
-            render={({ field : { onChange, value = Object.values(values)[0] } }) => (
-                <FormControl fullWidth>
+            render={({ field : { onChange, value = '' } }) => (
+                <FormControl sx={{ width: '100%', padding: '0px' }}>
                     <InputLabel id="demo-simple-select-filled-label">{label}</InputLabel>
                     <Select
                         fullWidth

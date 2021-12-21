@@ -22,6 +22,9 @@ function BaseTable<T> (
         handleItemUpdate,
     }: BaseTableProps<T>,
 ) {
+
+    console.log('table');
+
     return (
         <Paper sx={{ width : '100%' }}>
             <TableContainer>
@@ -61,4 +64,4 @@ function BaseTable<T> (
     );
 }
 
-export default BaseTable;
+export default React.memo(BaseTable);
