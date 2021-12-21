@@ -64,4 +64,4 @@ function BaseTable<T> (
     );
 }
 
-export default React.memo(BaseTable);
+export default React.memo(BaseTable, (prev, next) => JSON.stringify(prev) === JSON.stringify(next));

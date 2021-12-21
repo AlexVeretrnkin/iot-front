@@ -2,7 +2,7 @@ import * as React from 'react';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import BaseTable from '../../components/Table';
-import { FC, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import { MeterQueryModel } from '../../models/query/meter-query.model';
 import { useCreateMeterMutation, useGetMetersQuery, useRemoveMeterMutation, useUpdateMeterMutation } from '../../store/meters.api';
 import { MeterModel } from '../../models/meter.model';
@@ -69,7 +69,7 @@ function Meters () {
     const [updateMeter, { isLoading : isUpdating }] = useUpdateMeterMutation();
     const [createMeter, { isLoading : isCreating }] = useCreateMeterMutation();
 
-    let meterToDeleteId: string = null;
+    const meterToDeleteId = useRef(null);
 
     const openUpdateModal = (meter?: MeterModel) => {
         setValue('name', meter?.name);
@@ -94,7 +94,7 @@ function Meters () {
     };
 
     const handleDelete = (id) => {
-        meterToDeleteId = id;
+        meterToDeleteId.current = id;
 
         setYesNoOpen(true);
     }
@@ -120,6 +120,7 @@ function Meters () {
                 handleItemDeletion={handleDelete}
                 handleItemUpdate={openUpdateModal}
             />
+
             <Fab color="primary" aria-label="add" onClick={_ => openUpdateModal()} sx={{
                 position : 'absolute',
                 bottom   : 16,
@@ -132,7 +133,7 @@ function Meters () {
                 open={yesNoOpen}
                 handleClose={_ => setYesNoOpen(false)}
                 itemToDeleteName={'лічильник'}
-                handleAccept={_ => deleteMeter(meterToDeleteId)}
+                handleAccept={_ => deleteMeter(meterToDeleteId.current).then(_ => setYesNoOpen(false))}
             />
 
             <Dialog fullWidth={true} maxWidth={'xs'} open={!!meterToUpdate} onClose={_ => setMeterToUpdate(null)}>
