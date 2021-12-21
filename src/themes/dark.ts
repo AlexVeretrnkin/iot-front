@@ -1,3 +1,5 @@
+import { ThemeOptions } from '@mui/material/styles/createTheme';
+
 let dark = {
     "breakpoints": {
         "keys": [
@@ -124,7 +126,7 @@ let dark = {
         },
         "MuiSelect": {
             "defaultProps": {
-               
+
             },
             "styleOverrides": {
                 "iconFilled": {

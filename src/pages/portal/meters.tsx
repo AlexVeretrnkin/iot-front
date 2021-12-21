@@ -2,36 +2,38 @@ import * as React from 'react';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import BaseTable from '../../components/Table';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { MeterQueryModel } from '../../models/query/meter-query.model';
-import { useGetMetersQuery } from '../../store/meters';
+import { useCreateMeterMutation, useGetMetersQuery, useRemoveMeterMutation, useUpdateMeterMutation } from '../../store/meters.api';
 import { MeterModel } from '../../models/meter.model';
+import {
+    Button,
+    Container,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle, Fab,
+    IconButton,
+    Stack,
+    TextField,
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { Text } from '../../components/form/Text';
+import { useForm } from 'react-hook-form';
+import AddIcon from '@mui/icons-material/Add';
+import YesNoModal from '../../components/modals/yes-no-modal';
+import { MeterEnum } from '../../enums/meter.enum';
+import BaseSelect from '../../components/form/base-select';
 
-function createData(
-    name: string,
-    calories: number,
-    fat: number,
-    carbs: number,
-    protein: number,
-) {
-    return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-    createData('dfd', 356, 16.0, 49, 3.9),
-    createData('sadf', 356, 16.0, 49, 3.9),
-    createData('df', 356, 16.0, 49, 3.9),
-    createData('dfgdgd', 356, 16.0, 49, 3.9),
-];
-
-const TableItem: FC<{data: MeterModel}> = ({data}) => <TableRow
+const TableItem: FC<{
+    data: MeterModel,
+    handleItemDeletion: (id: string) => void;
+    handleItemUpdate: (item: MeterModel) => void
+}> = ({ data, handleItemDeletion, handleItemUpdate }) => <TableRow
     key={data.id}
-    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+    sx={{ '&:last-child td, &:last-child th' : { border : 0 } }}
 >
     <TableCell component="th" scope="row">
         {data.name}
@@ -40,26 +42,115 @@ const TableItem: FC<{data: MeterModel}> = ({data}) => <TableRow
     <TableCell align="right">{data.serial}</TableCell>
     <TableCell align="right">{data.position}</TableCell>
     <TableCell align="right">{data.key}</TableCell>
-</TableRow>
+    <TableCell align="right" width={50}>
+        <Stack direction="row" justifyContent="flex-end" spacing={0}>
+            <IconButton aria-label="edit" onClick={_ => handleItemUpdate(data)}>
+                <EditIcon />
+            </IconButton>
 
-function Meters() {
-    //@ts-ignore
-    const { data, error, isLoading } = useGetMetersQuery({
-        page: 0,
-        offset: 10
-    } as MeterQueryModel);
+            <IconButton aria-label="delete" onClick={_ => handleItemDeletion(data.id)}>
+                <DeleteIcon />
+            </IconButton>
+        </Stack>
+    </TableCell>
+</TableRow>;
 
+function Meters () {
+    const [query, setQuery] = useState<MeterQueryModel>({ page : 0, offset : 5 });
+
+    const [meterToUpdate, setMeterToUpdate] = useState(null);
+
+    const [yesNoOpen, setYesNoOpen] = useState(false);
+
+    const { handleSubmit, reset, control, setValue, getValues } = useForm();
+
+    const { data, error, isLoading } = useGetMetersQuery(query);
+    const [deleteMeter, { isLoading : isDeleting }] = useRemoveMeterMutation();
+    const [updateMeter, { isLoading : isUpdating }] = useUpdateMeterMutation();
+    const [createMeter, { isLoading : isCreating }] = useCreateMeterMutation();
+
+    let meterToDeleteId: string = null;
+
+    const openUpdateModal = (meter?: MeterModel) => {
+        setValue('name', meter?.name);
+        setValue('type', meter?.type);
+        setValue('serial', meter?.serial);
+        setValue('position', meter?.position);
+
+        setMeterToUpdate(meter ?? {});
+    };
+
+    const handleClose = () => {
+        const meter: MeterModel = getValues() as MeterModel;
+
+        if (meterToUpdate?.id) updateMeter({
+            ...meterToUpdate,
+            ...meter,
+        });
+
+        if (!!meterToUpdate && !meterToUpdate?.id && Object.keys(meter).length === 4) createMeter(meter);
+
+        setMeterToUpdate(null);
+    };
+
+    const handleDelete = (id) => {
+        meterToDeleteId = id;
+
+        setYesNoOpen(true);
+    }
+
+    const handleQueryChange = (newQuery: Partial<MeterQueryModel>) => {
+        setQuery({
+            ...query,
+            ...newQuery,
+        });
+    };
 
     return (
-        <BaseTable
-            tableHead={['Назва', 'Тип', 'Серійний номер', 'Розташування', 'Ключ']}
-            tableData={data?.data}
-            Item={TableItem}
-            handleChangePage={console.log}
-            handleChangeRowsPerPage={console.log}
-            page={0}
-            rowsPerPage={5}
-        />
+        <Container>
+            <BaseTable
+                tableHead={['Назва', 'Тип', 'Серійний номер', 'Розташування', 'Ключ', 'Дії']}
+                tableData={data?.data}
+                Item={TableItem}
+                handleChangePage={(_, page) => handleQueryChange({ page })}
+                handleChangeRowsPerPage={(event) => handleQueryChange({ offset : +event.target.value })}
+                page={query.page}
+                rowsPerPage={query.offset}
+                totalCount={data?.totalCount ?? 0}
+                handleItemDeletion={handleDelete}
+                handleItemUpdate={openUpdateModal}
+            />
+            <Fab color="primary" aria-label="add" onClick={_ => openUpdateModal()} sx={{
+                position : 'absolute',
+                bottom   : 16,
+                right    : 16,
+            }}>
+                <AddIcon />
+            </Fab>
+
+            <YesNoModal
+                open={yesNoOpen}
+                handleClose={_ => setYesNoOpen(false)}
+                itemToDeleteName={'лічильник'}
+                handleAccept={_ => deleteMeter(meterToDeleteId)}
+            />
+
+            <Dialog fullWidth={true} maxWidth={'xs'} open={!!meterToUpdate} onClose={_ => setMeterToUpdate(null)}>
+                <DialogTitle>Редагування лічильника</DialogTitle>
+                <DialogContent>
+                    <Stack spacing={2} sx={{ paddingTop : '5px' }}>
+                        <Text name="name" control={control} variant="outlined" placeholder="Назва" label={'Назва'} />
+                        <BaseSelect name="type" control={control} variant="outlined" placeholder="Тип" label={'Тип'} values={MeterEnum} />
+                        <Text name="serial" control={control} variant="outlined" placeholder="Серійний номер" label={'Серійний номер'} />
+                        <Text name="position" control={control} variant="outlined" placeholder="Розташування" label={'Розташування'} />
+                    </Stack>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={_ => setMeterToUpdate(null)}>Скасувати</Button>
+                    <Button onClick={handleClose}>Підтвердити</Button>
+                </DialogActions>
+            </Dialog>
+        </Container>
     );
 }
 

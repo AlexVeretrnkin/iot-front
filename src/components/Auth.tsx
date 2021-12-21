@@ -8,14 +8,13 @@ import { useForm } from 'react-hook-form';
 import { Text } from './form/Text';
 
 function Auth () {
-    const username: MutableRefObject<HTMLDivElement> = useRef<HTMLDivElement>();
-    const pass: MutableRefObject<HTMLDivElement> = useRef<HTMLDivElement>();
-
     const [snackbarMessage, setSnackbarMessage] = useState(null);
 
     const router = useRouter();
 
-    const authAction = (route: string, credentials={password:null, username:null}, onfulfilled: (resp: AxiosResponse) => void) => {
+    const { handleSubmit, reset, control, setValue } = useForm();
+
+    const authAction = (route: string, credentials={password: '', username: ''}, onfulfilled: (resp: AxiosResponse) => void) => {
         const username = credentials.username
         const password = credentials.password
 
@@ -43,8 +42,6 @@ function Auth () {
         });
     };
 
-    const { handleSubmit, reset, control, setValue } = useForm();
-
     return (
         <Card variant="outlined">
             <CardContent >
@@ -57,9 +54,9 @@ function Auth () {
                         <Stack spacing={2}>
 
                             <Stack spacing={1}>
-                                <Text name="username" control={control} variant="outlined"  placeholder="Ідентифікатор" />
+                                <Text name="username" control={control} variant="outlined" placeholder="Ідентифікатор" label={'Ідентифікатор'} />
 
-                                <Text name="password" control={control} variant="outlined"  placeholder="Пароль" />
+                                <Text name="password" control={control} variant="outlined" placeholder="Пароль" label={'Пароль'} />
                             </Stack>
 
                             <Stack spacing={1}>
@@ -68,7 +65,7 @@ function Auth () {
                                 <Button prefix="primary" variant="contained" onClick={handleSubmit(register)}>Заєреструватися</Button>
                             </Stack>
 
-                            
+
                             <Snackbar
                                 anchorOrigin={
                                     {
@@ -83,11 +80,11 @@ function Auth () {
                             />
                         </Stack>
                     </Stack>
-                    
+
                 </Box>
             </CardContent>
         </Card>
-        
+
     );
 }
 

@@ -26,6 +26,7 @@ import { routesConfig } from '../../config/route.config';
 import { RouteModel } from '../../models/route.model';
 import Link from 'next/link';
 import { isBrowser } from '@emotion/utils';
+import withAuth from '../with-auth';
 
 function Portal ({ children }) {
     const theme = useTheme();
@@ -110,4 +111,4 @@ function Portal ({ children }) {
     );
 }
 
-export default Portal;
+export default withAuth(Portal);

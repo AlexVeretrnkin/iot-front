@@ -15,6 +15,7 @@ import { ThemeProvider } from '@mui/system';
 import { CssBaseline, useMediaQuery } from '@mui/material';
 import dark from '../themes/dark';
 import white from '../themes/white';
+import { ThemeOptions } from '@mui/material/styles/createTheme';
 
 axios.defaults.baseURL = 'http://localhost:3000';
 
@@ -42,7 +43,7 @@ export default function MyApp ({ Component, pageProps }: AppProps) {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
     return (
-        <ThemeProvider theme={prefersDarkMode ? createTheme(dark) : createTheme(white)}>
+        <ThemeProvider theme={prefersDarkMode ? createTheme(dark as unknown as ThemeOptions) : createTheme(white as unknown as ThemeOptions)}>
             <CssBaseline />
             <Provider store={store}>
                 <LocalizationProvider dateAdapter={DateAdapter}>

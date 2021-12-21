@@ -17,13 +17,16 @@ function BaseTable<T> (
         handleChangeRowsPerPage,
         rowsPerPage = 5,
         page = 0,
+        totalCount,
+        handleItemDeletion,
+        handleItemUpdate,
     }: BaseTableProps<T>,
 ) {
     return (
         <Paper sx={{ width : '100%' }}>
             <TableContainer>
                 <Table stickyHeader aria-label="simple table">
-                    <TableHead >
+                    <TableHead>
                         <TableRow>
                             {
                                 tableHead.map((name, idx) => <TableCell key={name} align={idx === 0 ? 'left' : 'right'}>{name}</TableCell>)
@@ -33,8 +36,14 @@ function BaseTable<T> (
                     <TableBody>
                         {
                             tableData ? tableData.map(
-                                (row, idx) => <Item key={idx} data={row} />,
-                            ) : <TableCell>'Loading...'</TableCell>
+                                (row, idx) =>
+                                    <Item
+                                        key={idx}
+                                        data={row}
+                                        handleItemDeletion={handleItemDeletion}
+                                        handleItemUpdate={handleItemUpdate}
+                                    />,
+                            ) : <TableRow><TableCell>'Loading...'</TableCell></TableRow>
                         }
                     </TableBody>
                 </Table>
@@ -42,7 +51,7 @@ function BaseTable<T> (
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25, 50, 100]}
                 component="div"
-                count={tableData?.length ?? 0}
+                count={totalCount}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
