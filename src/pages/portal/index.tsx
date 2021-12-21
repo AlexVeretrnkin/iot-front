@@ -7,6 +7,9 @@ import { CardGiftcardRounded } from '@mui/icons-material';
 import { useState } from 'react'
 import { useForm } from "react-hook-form";
 import { DateTime } from '../../components/form/DateTime';
+import { useGetMeterCountQuery } from '../../store/stats.api';
+import { DateRangeQueryModel } from '../../models/query/date-range-query.model';
+
 import { getFromTo } from '../../core/date-formater';
 
 
@@ -38,7 +41,13 @@ const chartData = {
 
 export default function Main () {
    const { handleSubmit, reset, control, setValue } = useForm({ defaultValues: defaultValues });
-   const onSubmit = (data) => console.log(data);
+   const onSubmit = (data) => {
+       console.log(data)
+       setDateQuery({from: data.dateFrom, to: data.dateTo})
+   }
+
+   const [dateQuery, setDateQuery] = useState<DateRangeQueryModel>({ from: moment(defaultValues.dateFrom), to: moment(defaultValues.dateTo) });
+   const { data: meterCountData, error: meterCountError, isLoading: meterCountIsLoading } = useGetMeterCountQuery();
 
     return <Stack spacing={3}>
         <Masonry columns={{xs: 1, sm: 1, md: 2, lg:2, xl:3}} spacing={1}>
@@ -49,7 +58,7 @@ export default function Main () {
                     </Typography>
 
                     <Typography variant="h4" component="div">
-                        13
+                        {meterCountIsLoading ? '...' : meterCountData}
                     </Typography>
                 </CardContent>
             </Card>
