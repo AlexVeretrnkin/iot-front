@@ -8,6 +8,8 @@ import axios, { AxiosError } from 'axios';
 import { removeToken } from '../core/auth';
 import getLayout from '../core/Layout';
 import { ReactElement } from 'react';
+import DateAdapter from '@mui/lab/AdapterMoment';
+import { LocalizationProvider } from '@mui/lab';
 
 axios.defaults.baseURL = 'http://localhost:3000';
 
@@ -33,7 +35,11 @@ export default function MyApp ({ Component, pageProps }: AppProps) {
 
     return (
         <Provider store={store}>
-            {Layout}
+            <LocalizationProvider dateAdapter={DateAdapter}>
+                {Layout}
+            </LocalizationProvider>
         </Provider>
+        
+        
     );
 }
