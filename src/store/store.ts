@@ -2,15 +2,19 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 
 import counterReducer from '../features/counter/counterSlice'
 import { metersApi } from './meters.api';
+import { statsApi } from './stats.api';
 
 export function makeStore() {
   return configureStore({
     reducer: {
       counter: counterReducer,
       [metersApi.reducerPath]: metersApi.reducer,
+      [statsApi.reducerPath]: statsApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(metersApi.middleware),
+        getDefaultMiddleware()
+        .concat(metersApi.middleware)
+        .concat(statsApi.middleware),
   })
 }
 
