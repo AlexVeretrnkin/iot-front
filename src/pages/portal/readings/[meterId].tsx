@@ -69,7 +69,9 @@ function Readings () {
     const { control, getValues, setValue, handleSubmit } = useForm();
     const onSubmit = (data) => console.log(data, getValues());
 
-    const { data, error, isLoading } = useGetReadingsQuery(query);
+    const { data, error, isLoading } = useGetReadingsQuery(query, {
+        skip: !query?.meterId
+    });
     const [deleteReading, { isLoading : isDeleting }] = useRemoveReadingMutation();
     const [createReading, { isLoading : isCreating }] = useCreateReadingMutation();
 
