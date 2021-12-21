@@ -15,17 +15,32 @@ import {
     DialogContentText,
     DialogTitle, Fab,
     IconButton,
+    Link,
     Stack,
     TextField,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Text } from '../../components/form/Text';
 import { useForm } from 'react-hook-form';
 import AddIcon from '@mui/icons-material/Add';
 import YesNoModal from '../../components/modals/yes-no-modal';
 import { MeterEnum } from '../../enums/meter.enum';
 import BaseSelect from '../../components/form/base-select';
+
+
+import OpacityIcon from '@mui/icons-material/Opacity'; // Water
+import BoltIcon from '@mui/icons-material/Bolt'; // Electricity
+import LocalGasStationIcon from '@mui/icons-material/LocalGasStation'; // Gas
+import ThermostatAutoIcon from '@mui/icons-material/ThermostatAuto'; // Heat
+
+const typeToLabel = {
+    "electricity": "Електроенергія",
+    "water": "Вода",
+    "heating": "Тепло",
+    "gas": "Газ",
+}
 
 const TableItem: FC<{
     data: MeterModel,
@@ -38,10 +53,29 @@ const TableItem: FC<{
     <TableCell component="th" scope="row">
         {data.name}
     </TableCell>
-    <TableCell align="right">{data.type}</TableCell>
+    <TableCell align="right">
+        <Stack direction="row" justifyContent="flex-begin" spacing={4}>
+            
+            {data.type == "water" ? <OpacityIcon/> 
+            : data.type == "electricity" ? <BoltIcon/>
+            : data.type == "heating" ? <ThermostatAutoIcon/>
+            : data.type == "gas" ? <LocalGasStationIcon/>
+            : <OpacityIcon/>}
+            
+            {typeToLabel[data.type]}
+        </Stack>
+    </TableCell>
     <TableCell align="right">{data.serial}</TableCell>
-    <TableCell align="right">{data.position}</TableCell>
-    <TableCell align="right">{data.key}</TableCell>
+    <TableCell align="right">
+        <Link href={"https://www.google.com/maps/search/" + data.position.replace(' ', '+')}>
+            {data.position}
+        </Link>
+    </TableCell>
+    <TableCell align="right">
+        <IconButton aria-label="edit" onClick={_ => navigator.clipboard.writeText(data.key)}>
+            <ContentCopyIcon />
+        </IconButton>
+    </TableCell>
     <TableCell align="right" width={50}>
         <Stack direction="row" justifyContent="flex-end" spacing={0}>
             <IconButton aria-label="edit" onClick={_ => handleItemUpdate(data)}>

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import SpeedIcon from '@mui/icons-material/Speed';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -93,7 +95,7 @@ function Portal ({ children }) {
                                 <ListItem button selected={route.route === router?.route}>
 
                                     <ListItemIcon>
-                                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                                        {index % 2 === 0 ? <DashboardIcon /> : <SpeedIcon />}
                                     </ListItemIcon>
                                     <ListItemText primary={route.name} />
                                 </ListItem>
