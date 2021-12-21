@@ -46,7 +46,7 @@ function Auth () {
     const { handleSubmit, reset, control, setValue } = useForm();
 
     return (
-        <Card>
+        <Card variant="outlined">
             <CardContent >
                 <Box m={2}>
                     <Stack spacing={4}>
@@ -57,15 +57,15 @@ function Auth () {
                         <Stack spacing={2}>
 
                             <Stack spacing={1}>
-                                <Text name="username" control={control} variant="outlined"  placeholder="Username" />
+                                <Text name="username" control={control} variant="outlined"  placeholder="Ідентифікатор" />
 
-                                <Text name="password" control={control} variant="outlined"  placeholder="Password" />
+                                <Text name="password" control={control} variant="outlined"  placeholder="Пароль" />
                             </Stack>
 
                             <Stack spacing={1}>
-                                <Button prefix="primary" variant="contained" onClick={handleSubmit(loginUser)}>Login</Button>
+                                <Button prefix="primary" variant="contained" onClick={handleSubmit(loginUser)}>Увійти</Button>
 
-                                <Button prefix="primary" variant="contained" onClick={handleSubmit(register)}>Register</Button>
+                                <Button prefix="primary" variant="contained" onClick={handleSubmit(register)}>Заєреструватися</Button>
                             </Stack>
 
                             

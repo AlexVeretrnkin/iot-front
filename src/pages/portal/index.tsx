@@ -57,14 +57,14 @@ export default function Main () {
 
     return <Stack spacing={3}>
         <Masonry columns={{xs: 1, sm: 1, md: 2, lg:2, xl:3}} spacing={1}>
-            <Card>
+            <Card variant="outlined">
                 <CardContent>
                     <Typography variant="h5" component="div">
-                            Кількість лічильників
+                        Кількість лічильників
                     </Typography>
 
                     <Typography variant="h4" component="div">
-                            13
+                        13
                     </Typography>
                 </CardContent>
             </Card>
@@ -72,7 +72,7 @@ export default function Main () {
         
     
         <Masonry columns={{xs: 1, sm: 1, md: 2, lg:2, xl:3}} spacing={1}>
-            <Card>
+            <Card variant="outlined">
                 <CardContent>
                     <Stack spacing={2}>
                         <Typography variant="h5" component="div">
@@ -110,7 +110,7 @@ export default function Main () {
                 </CardContent>
             </Card>
 
-            <Card>
+            <Card variant="outlined">
                 <CardContent>
                     <Typography variant="h5" component="div">
                         Показників отримано 
@@ -119,7 +119,7 @@ export default function Main () {
                 </CardContent>
             </Card>
 
-            <Card>
+            <Card variant="outlined">
                 <CardContent>
                     <Typography variant="h5" component="div">
                         Вжиток електроенергії 
@@ -128,7 +128,7 @@ export default function Main () {
                 </CardContent>
             </Card>
 
-            <Card>
+            <Card variant="outlined">
                 <CardContent>
                     <Typography variant="h5" component="div">
                         Вжиток газу 
@@ -137,7 +137,7 @@ export default function Main () {
                 </CardContent>
             </Card>
 
-            <Card>
+            <Card variant="outlined">
                 <CardContent>
                     <Typography variant="h5" component="div">
                         Вжиток теплоенергії 
@@ -146,7 +146,7 @@ export default function Main () {
                 </CardContent>
             </Card>
 
-            <Card>
+            <Card variant="outlined">
                 <CardContent>
                     <Typography variant="h5" component="div">
                         Вжиток води 
