@@ -3,7 +3,6 @@ import { axiosBaseQuery } from '../core/axios-base-query';
 import { MeterQueryModel } from '../models/query/meter-query.model';
 import { PaginationModel } from '../models/pagination.model';
 import { MeterModel } from '../models/meter.model';
-import { queryParams } from '../core/query-params';
 
 export const metersApi = createApi({
     baseQuery   : axiosBaseQuery(),

@@ -18,5 +18,10 @@ export const routesConfig: RouteModel[] = [
         route: '/portal/meters',
         component: Portal,
         name: 'Лічильники'
+    },
+    {
+        route: '/portal/readings/[meterId]',
+        component: Portal,
+        name: 'Показання'
     }
 ];

@@ -6,14 +6,14 @@ export type BaseTableProps<T> = {
     tableData: T[];
     Item: FC<{
         data: T,
-        handleItemDeletion: (id: string) => void;
-        handleItemUpdate: (item: T) => void
+        handleItemDeletion?: (id: string) => void;
+        handleItemUpdate?: (item: T) => void
     }>;
     handleChangePage: (event?: React.MouseEvent<HTMLButtonElement> | null, page?: number) => void;
     handleChangeRowsPerPage: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
     rowsPerPage: number;
     page: number;
     totalCount: number;
-    handleItemDeletion: (id: string) => void;
-    handleItemUpdate: (item: T) => void
+    handleItemDeletion?: (id: string) => void;
+    handleItemUpdate?: (item: T) => void
 }
