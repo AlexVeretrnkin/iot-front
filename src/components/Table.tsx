@@ -22,9 +22,6 @@ function BaseTable<T> (
         handleItemUpdate,
     }: BaseTableProps<T>,
 ) {
-
-    console.log('table');
-
     return (
         <Paper sx={{ width : '100%' }}>
             <TableContainer>

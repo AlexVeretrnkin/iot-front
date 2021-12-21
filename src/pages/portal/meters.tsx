@@ -12,12 +12,9 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle, Fab,
     IconButton,
-    Link,
     Stack,
-    TextField,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -26,21 +23,28 @@ import { Text } from '../../components/form/Text';
 import { useForm } from 'react-hook-form';
 import AddIcon from '@mui/icons-material/Add';
 import YesNoModal from '../../components/modals/yes-no-modal';
-import { MeterEnum } from '../../enums/meter.enum';
 import BaseSelect from '../../components/form/base-select';
-
 
 import OpacityIcon from '@mui/icons-material/Opacity'; // Water
 import BoltIcon from '@mui/icons-material/Bolt'; // Electricity
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation'; // Gas
 import ThermostatAutoIcon from '@mui/icons-material/ThermostatAuto'; // Heat
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import Link from 'next/link'
 
 const typeToLabel = {
-    "electricity": "Електроенергія",
-    "water": "Вода",
-    "heating": "Тепло",
-    "gas": "Газ",
-}
+    'electricity' : 'Електроенергія',
+    'water'       : 'Вода',
+    'heating'     : 'Тепло',
+    'gas'         : 'Газ',
+};
+
+const typeToLabelRevert = {
+    'Електроенергія' : 'electricity',
+    'Вода'           : 'water',
+    'Тепло'          : 'heating',
+    'Газ'            : 'gas',
+};
 
 const TableItem: FC<{
     data: MeterModel,
@@ -55,19 +59,19 @@ const TableItem: FC<{
     </TableCell>
     <TableCell align="right">
         <Stack direction="row" justifyContent="flex-begin" spacing={4}>
-            
-            {data.type == "water" ? <OpacityIcon/> 
-            : data.type == "electricity" ? <BoltIcon/>
-            : data.type == "heating" ? <ThermostatAutoIcon/>
-            : data.type == "gas" ? <LocalGasStationIcon/>
-            : <OpacityIcon/>}
-            
+
+            {data.type == 'water' ? <OpacityIcon />
+                : data.type == 'electricity' ? <BoltIcon />
+                    : data.type == 'heating' ? <ThermostatAutoIcon />
+                        : data.type == 'gas' ? <LocalGasStationIcon />
+                            : <OpacityIcon />}
+
             {typeToLabel[data.type]}
         </Stack>
     </TableCell>
     <TableCell align="right">{data.serial}</TableCell>
     <TableCell align="right">
-        <Link href={"https://www.google.com/maps/search/" + data.position.replace(' ', '+')}>
+        <Link href={'https://www.google.com/maps/search/' + data.position.replace(' ', '+')}>
             {data.position}
         </Link>
     </TableCell>
@@ -78,6 +82,12 @@ const TableItem: FC<{
     </TableCell>
     <TableCell align="right" width={50}>
         <Stack direction="row" justifyContent="flex-end" spacing={0}>
+            <Link href={`readings/${encodeURIComponent(data.id)}`}>
+                <IconButton aria-label="edit">
+                    <RemoveRedEyeIcon />
+                </IconButton>
+            </Link>
+
             <IconButton aria-label="edit" onClick={_ => handleItemUpdate(data)}>
                 <EditIcon />
             </IconButton>
@@ -131,7 +141,7 @@ function Meters () {
         meterToDeleteId.current = id;
 
         setYesNoOpen(true);
-    }
+    };
 
     const handleQueryChange = (newQuery: Partial<MeterQueryModel>) => {
         setQuery({
@@ -175,7 +185,8 @@ function Meters () {
                 <DialogContent>
                     <Stack spacing={2} sx={{ paddingTop : '5px' }}>
                         <Text name="name" control={control} variant="outlined" placeholder="Назва" label={'Назва'} />
-                        <BaseSelect name="type" control={control} variant="outlined" placeholder="Тип" label={'Тип'} values={MeterEnum} />
+                        <BaseSelect name="type" control={control} variant="outlined" placeholder="Тип" label={'Тип'}
+                                    values={typeToLabelRevert} />
                         <Text name="serial" control={control} variant="outlined" placeholder="Серійний номер" label={'Серійний номер'} />
                         <Text name="position" control={control} variant="outlined" placeholder="Розташування" label={'Розташування'} />
                     </Stack>

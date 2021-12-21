@@ -59,7 +59,7 @@ function Portal ({ children }) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
-                        { routesConfig.find(route => route.route === router.route).name ?? '...' }
+                        {routesConfig.find(route => route.route === router.route).name ?? '...'}
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -90,17 +90,18 @@ function Portal ({ children }) {
                 </DrawerHeader>
                 <List>
                     {
-                        routesConfig.filter(route => route.route !== '/').map((route: RouteModel, index) => (
-                            <Link href={route.route} key={route.name}>
-                                <ListItem button selected={route.route === router?.route}>
+                        routesConfig.filter(route => route.route !== '/' && route.route !== '/portal/readings/[meterId]').
+                            map((route: RouteModel, index) => (
+                                <Link href={route.route} key={route.name}>
+                                    <ListItem button selected={route.route === router?.route}>
 
-                                    <ListItemIcon>
-                                        {index % 2 === 0 ? <DashboardIcon /> : <SpeedIcon />}
-                                    </ListItemIcon>
-                                    <ListItemText primary={route.name} />
-                                </ListItem>
-                            </Link>
-                        ))
+                                        <ListItemIcon>
+                                            {index % 2 === 0 ? <DashboardIcon /> : <SpeedIcon />}
+                                        </ListItemIcon>
+                                        <ListItemText primary={route.name} />
+                                    </ListItem>
+                                </Link>
+                            ))
                     }
                 </List>
             </Drawer>
